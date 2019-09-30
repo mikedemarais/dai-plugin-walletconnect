@@ -1,17 +1,17 @@
 # dai-plugin-walletlink
 
-A [Dai.js][daijs] plugin for using Coinbase WalletLink in a browser environment.
+A [Dai.js][daijs] plugin for using Wallet Coonect in a browser environment.
 
 ### Example usage
 
 ```js
-import WalletLinkPlugin from '@makerdao/dai-plugin-walletlink';
+import WalletConnect from '@makerdao/dai-plugin-walletconnect';
 import Maker from '@makerdao/dai';
 
 const maker = await Maker.create('http', {
   plugins: [WalletLinkPlugin],
   accounts: {
-    myWalletLink1: { type: 'walletlink' }
+    myWalletConnect1: { type: 'walletlink' }
   }
 });
 
@@ -19,17 +19,17 @@ const maker = await Maker.create('http', {
 await maker.authenticate();
 
 // or you can defer setting the account up until later
-await maker.addAccount('myWalletLink2', { type: 'walletlink' });
+await maker.addAccount('myWalletConnect2', { type: 'walletconnect' });
 ```
 
 #### Using the optional address callback
 
 ```js
-await maker.addAccount('myWalletLink', {
+await maker.addAccount('myWalletConnect', {
   type: 'walletlink',
   callback: address => {
     //e.g. for analytics
-    console.log('My WalletLink address', address);
+    console.log('My WalletConnect address', address);
   }
 });
 ```
