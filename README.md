@@ -9,9 +9,9 @@ import WalletConnect from '@makerdao/dai-plugin-walletconnect';
 import Maker from '@makerdao/dai';
 
 const maker = await Maker.create('http', {
-  plugins: [WalletLinkPlugin],
+  plugins: [WalletConnect],
   accounts: {
-    myWalletConnect1: { type: 'walletlink' }
+    myWalletConnect1: { type: 'walletconnect' }
   }
 });
 
@@ -26,7 +26,7 @@ await maker.addAccount('myWalletConnect2', { type: 'walletconnect' });
 
 ```js
 await maker.addAccount('myWalletConnect', {
-  type: 'walletlink',
+  type: 'walletconnect',
   callback: address => {
     //e.g. for analytics
     console.log('My WalletConnect address', address);
