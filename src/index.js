@@ -2,14 +2,17 @@ import WalletConnect from '@walletconnect/browser';
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 
 export default function (maker) {
-  console.log('Hello WALLET CONNECT!')
+  console.log('Hello WALLET CONNECT!! $$')
   const WALLETCONNECT = 'walletconnect'
 
   maker.service('accounts', true).addAccountType(WALLETCONNECT, async settings => {
-
+    console.log('WALLET CONNECT!!! Service')
     const walletConnectProvider = new WalletConnect({
       bridge: 'https://bridge.walletconnect.org'
     })
+
+    // walletConnectProvider.killSession()
+    // console.log('Session killed')
 
     // Check if connection is already established
     if (!walletConnectProvider.connected) {
@@ -25,7 +28,6 @@ export default function (maker) {
       });
     }
 
-    let address;
 
     // Subscribe to connection events
     walletConnectProvider.on("connect", (error, payload) => {
@@ -37,7 +39,8 @@ export default function (maker) {
 
       // Get provided accounts and chainId
       const { accounts, chainId } = payload.params[0];
-      address = accounts[0];
+      console.log('WALLET CONNECT ACCOUNT: ', accounts)
+      let address = accounts[0];
       initialise(address);// play around
     });
 
@@ -48,12 +51,15 @@ export default function (maker) {
 
       // Get updated accounts and chainId
       const { accounts, chainId } = payload.params[0];
-      address = accounts[0];
+      let address = accounts[0];
       initialise(address);
     });
 
 
-    function initialise() {
+    function initialise(address) {
+      if (settings.callback && typeof settings.callback === 'function') {
+        settings.callback(address);
+      }
       // setEngine and handleRequest are expected by the web3ProviderEngine
       function setEngine(engine) {
         const self = this;
@@ -81,7 +87,7 @@ export default function (maker) {
       }
 
       walletConnectProvider.setEngine = setEngine;
-      walletLinkProvider.handleRequest = handleRequest;
+      walletConnectProvider.handleRequest = handleRequest;
 
 
       return { subprovider: walletConnectProvider, address }
