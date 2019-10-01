@@ -1,4 +1,4 @@
-# dai-plugin-walletlink
+# dai-plugin-walletconnect
 
 A [Dai.js][daijs] plugin for using Wallet Coonect in a browser environment.
 
