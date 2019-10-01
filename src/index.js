@@ -2,11 +2,10 @@ import WalletConnect from '@walletconnect/browser';
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 
 export default function (maker) {
-  console.log('Hello WALLET CONNECT!! $$')
   const WALLETCONNECT = 'walletconnect'
+  console.log('WALLET CONNECT!')
 
   maker.service('accounts', true).addAccountType(WALLETCONNECT, async settings => {
-    console.log('WALLET CONNECT!!! Service')
     const walletConnectProvider = new WalletConnect({
       bridge: 'https://bridge.walletconnect.org'
     })
