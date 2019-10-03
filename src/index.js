@@ -27,38 +27,10 @@ export default function (maker) {
       });
     }
 
-
-    // Subscribe to connection events
-    walletConnectProvider.on("connect", (error, payload) => {
-      if (error) {
-        throw error;
-      }
-      // Close QR Code Modal
-      WalletConnectQRCodeModal.close();
-
-      // Get provided accounts and chainId
-      const { accounts, chainId } = payload.params[0];
-      console.log('WALLET CONNECT ACCOUNT: ', accounts)
-      let address = accounts[0];
-      initialise(address);// play around
-    });
-
-    walletConnectProvider.on("session_update", (error, payload) => {
-      if (error) {
-        throw error;
-      }
-
-      // Get updated accounts and chainId
-      const { accounts, chainId } = payload.params[0];
-      let address = accounts[0];
-      initialise(address);
-    });
-
-
     function initialise(address) {
-      if (settings.callback && typeof settings.callback === 'function') {
-        settings.callback(address);
-      }
+      // if (settings.callback && typeof settings.callback === 'function') {
+      //   settings.callback(address);
+      // }
       // setEngine and handleRequest are expected by the web3ProviderEngine
       function setEngine(engine) {
         const self = this;
@@ -82,15 +54,50 @@ export default function (maker) {
 
         self.sendTransaction(payload, (err, result) => {
           return result ? end(null, result.result) : end(err);
-        });
+        }).then(result => result).catch(err => err);
       }
+
 
       walletConnectProvider.setEngine = setEngine;
       walletConnectProvider.handleRequest = handleRequest;
 
-
-      return { subprovider: walletConnectProvider, address }
+      console.log('Passing down address to DAI.js SDK', address)
+      return { subprovider: walletConnectProvider, address: address }
     }
 
+    return new Promise((resolve, reject) => {
+      //fail if nothing happens after 20 seconds
+      const fail = setTimeout(() => reject(), 20000);
+
+      walletConnectProvider.on("session_update", (error, payload) => {
+        if (error) {
+          throw error;
+        }
+        clearTimeout(fail);
+        
+        // Get updated accounts and chainId
+        const { accounts, chainId } = payload.params[0];
+        let address = accounts[0];
+        resolve(initialise(address))
+      });
+
+      // Subscribe to connection events
+      walletConnectProvider.on("connect", (error, payload) => {
+        if (error) {
+          console.log('ERROR connecting to WALLET CONNECT:', error)
+          throw error;
+        }
+        clearTimeout(fail);
+
+        // Close QR Code Modal
+        WalletConnectQRCodeModal.close();
+
+        // Get provided accounts and chainId
+        const { accounts, chainId } = payload.params[0];
+        console.log('WALLET CONNECT ACCOUNTS: ', accounts)
+        let address = accounts[0];
+        resolve(initialise(address))
+      });
+    })
   })
 }
