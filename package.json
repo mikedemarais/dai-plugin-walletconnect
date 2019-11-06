@@ -1,6 +1,6 @@
 {
   "name": "@makerdao/dai-plugin-walletconnect",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -8,8 +8,6 @@
     "build:watch": "sane ./scripts/build.sh src --wait=10"
   },
   "dependencies": {
-    "@walletconnect/browser": "^1.0.0-beta.38",
-    "@walletconnect/qrcode-modal": "^1.0.0-beta.38",
     "@walletconnect/web3-subprovider": "^1.0.0-beta.38",
     "babel-runtime": "^6.26.0"
   },
